@@ -1,0 +1,21 @@
+{
+    "name": "prodrigestivill/gravatar",
+    "type": "roundcube-plugin",
+    "description": "Fetch gravatar image on view e-mail.",
+    "keywords": ["gravatar","addressbook","photo"],
+    "homepage": "https://github.com/prodrigestivill/roundcube-gravatar",
+    "license": "GPL-3.0+",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://plugins.roundcube.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0",
+        "roundcube/plugin-installer": ">=0.1.3"
+    },
+    "extra": {
+        "roundcube": ">=0.8.5"
+    }
+}
