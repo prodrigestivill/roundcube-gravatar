@@ -52,6 +52,12 @@ class gravatar_addressbook_backend extends rcube_addressbook
         return new rcube_result_set();
     }
 
+    private function _get_api_url($email, $api, &$vars){
+        $e = strtolower(trim($email));
+        $o = array('%e' => $e, '%m' => md5($e), '%a' => sha1($e));
+        return strtr($api, array_merge($vars, $o));
+    }
+
     /**
     * Search records
     *
@@ -67,26 +73,30 @@ class gravatar_addressbook_backend extends rcube_addressbook
     * @return object rcube_result_set List of contact records and 'count' value
     */
     function search($fields, $value, $mode=0, $select=true, $nocount=false, $required=array()){
+        $fil = is_array($fields)?$fields:array($fields);
+        $val = is_array($value)?$value:array($value);
+        $req = is_array($required)?$required:array($required);
         $res = new rcube_result_set();
 
         $config = rcmail::get_instance()->config;
-        $size = intval($config->get('gravatar_size'));
-        $rating = urlencode($config->get('gravatar_rating'));
-        $schema = $config->get('gravatar_https', true) ? 'https' : 'http';
-        $server = $config->get('gravatar_server', 'www.gravatar.com');
+        $acfg = array('%%' => '%',
+                      '%z' => intval($config->get('gravatar_size')),
+                      '%r' => urlencode($config->get('gravatar_rating')),
+                      '%s' => $config->get('gravatar_https', false) ? 'https' : 'http',
+                      '%h' => $config->get('gravatar_server', 'www.gravatar.com')
+                  );
+        $papi = $config->get('gravatar_photo_api', '%s://%h/avatar/%m?s=%z&r=%r&d=404');
 
-        if ($mode == 1 && in_array('email', $fields) &&
-          count(array_diff($required, array('ID', 'email', 'photo')))==0){
+        if ($mode == 1 && in_array('email', $fil) &&
+          count(array_diff($req, array('ID', 'email', 'photo')))==0){
             $total = 0;
-            $val = is_array($value)?$value:array($value);
-            $req = is_array($required)?$required:array($required);
             foreach ((array)$val as $idx => $col) {
                 $v = $val[$idx];
-                $hash = md5(strtolower(trim($v)));
+                $id = strtolower(trim($v));
                 $record = array();
-                $record['ID'] = $hash;
+                $record['ID'] = $id;
                 $record['email'] = array($v);
-                $url = "$schema://$server/avatar/$hash?s=$size&r=$rating&d=404";
+                $url = $this->_get_api_url($v, $papi, $acfg);
                 $p = @file_get_contents($url);
                 if ($p === false){
                     if (in_array('photo', $req)) continue;
