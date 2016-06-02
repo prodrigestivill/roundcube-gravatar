@@ -118,7 +118,7 @@ class gravatar_addressbook_backend extends rcube_addressbook
                     $urls[] = gravatar_addressbook_backend::_get_api_url($v, $gpapi, $acfg);
                 }
                 $p = gravatar_addressbook_backend::_get_contents_apis($urls);
-                if ($p == false){
+                if ($p === false){
                     if (in_array('photo', $req)) continue;
                 }else{
                     $record['photo'] = $p;
