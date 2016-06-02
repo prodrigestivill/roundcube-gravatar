@@ -16,6 +16,6 @@
         "roundcube/plugin-installer": ">=0.1.3"
     },
     "extra": {
-        "roundcube": ">=0.8.5"
+        "roundcube": ">=0.9"
     }
 }
