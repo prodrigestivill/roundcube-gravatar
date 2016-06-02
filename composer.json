@@ -1,8 +1,8 @@
 {
     "name": "prodrigestivill/gravatar",
     "type": "roundcube-plugin",
-    "description": "Fetch gravatar image on view e-mail.",
-    "keywords": ["gravatar","addressbook","photo"],
+    "description": "Fetch avatar image on view e-mail (using Gravatar and/or custom API).",
+    "keywords": ["gravatar","addressbook","photo", "avatar"],
     "homepage": "https://github.com/prodrigestivill/roundcube-gravatar",
     "license": "GPL-3.0+",
     "repositories": [

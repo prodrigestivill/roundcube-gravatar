@@ -7,6 +7,7 @@ It has been implemented as Roundcube readonly hidden addressbook. You have to en
 
 Tested in roundcube 1.2.0.
 
+
 Installation
 ============
 
@@ -19,13 +20,17 @@ Intallation steps:
   - Via tarball:
     - Download and extract the tarball into `roundcube/plugins` directory and rename the extracted directory to `gravatar`.
 
-For the expected behaviour ensure it is always the latest plugin (or at least addressbook plugin) in the `$config['plugins']` list at `config/config.inc.php`.
+
+For the expected behaviour **ensure** it is always the latest plugin (or at least addressbook plugin) in the `$config['plugins']` list at `config/config.inc.php`.
+
 
 To enable per user: Login to Roundcube and enable/disable plugin by navigating to the Settings page, clicking on Preferences, click on Address Book, and Enable Gravatar, and Save.
+
 
 To configure/change default values:
   - Copy `config.inc.php.dist` to `config.inc.php` in `plugins/gravatar/` directory.
   - Modify the values you are interested into change and comment the rest with '//'
+
 
 Custom API
 ==========
@@ -39,9 +44,11 @@ You can define your custom API for photos at 'gravatar_custom_photo_api' in `con
   - %z: configured avatar size (in px)
   - %r: configured rating ('g', 'pg', 'r', 'x')
 
-Usage for default Gravatar API is: '%s://www.gravatar.com/avatar/%m?s=%z&r=%r&d=404'
+Usage for default Gravatar API is: `%s://www.gravatar.com/avatar/%m?s=%z&r=%r&d=404`
+
 
 You can use local files, it is not needed to be an URL. But if you plan to use it for direct filesystem access, for security reasons it is best to only use hashed email substitutions, even that all parameters are escaped with urlencode.
+
 
 Examples:
 ```php
