@@ -1,7 +1,7 @@
 Roundcube Gravatar
 ==================
 
-Non official plug-in showing [Gravatar](https://www.gravatar.com/) profile images inside the [Roundcube webmail](https://roundcube.net/) client.
+Non official plug-in showing [Gravatar](https://www.gravatar.com/) profile images inside the [Roundcube webmail](https://roundcube.net/) client, it also supports custom avatars API.
 
 It has been implemented as Roundcube readonly hidden addressbook. You have to ensure this plugin is added into the latest entry in the main config (`$config['plugins']`). If so and any address book (LDAP, Google, etc...) already has a photo for a contact it will use first the other pictures and lastly if none reported it will use gravatar (Roundcube will use it in following the order listed in the main config).
 
@@ -30,14 +30,22 @@ To configure/change default values:
 Custom API
 ==========
 
-You can define your custom API for photos at 'gravatar_photo_api' in `config.inc.php`.
+You can define your custom API for photos at 'gravatar_custom_photo_api' in `config.inc.php` in `plugins/gravatar/` directory. With the following substitutions.
   - %%: literal '%'
   - %s: schema ('http', 'https') depending of 'gravatar_https' config
-  - %h: server host defined in 'gravatar_server' config
-  - %e: contact email
-  - %m: md5(email)
-  - %a: sha1(email)
+  - %e: contact email (escaped with urlencode)
+  - %m: hashed md5(email)
+  - %a: hashed sha1(email)
   - %z: configured avatar size (in px)
   - %r: configured rating ('g', 'pg', 'r', 'x')
 
-As an example, default gravatar api is: '%s://%h/avatar/%m?s=%z&r=%r&d=404'
+Usage for default Gravatar API is: '%s://www.gravatar.com/avatar/%m?s=%z&r=%r&d=404'
+
+You can use local files, it is not needed to be an URL. But if you plan to use it for direct filesystem access, for security reasons it is best to only use hashed email substitutions, even that all parameters are escaped with urlencode.
+
+Examples:
+```php
+$config['gravatar_custom_photo_api'] = 'http://www.example.com/directory/%e.jpg?s=%z';
+OR
+$config['gravatar_custom_photo_api'] = '/path/%m.jpg';
+```

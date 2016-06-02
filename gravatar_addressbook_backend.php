@@ -52,10 +52,20 @@ class gravatar_addressbook_backend extends rcube_addressbook
         return new rcube_result_set();
     }
 
-    private function _get_api_url($email, $api, &$vars){
+    private static function _get_api_url($email, $api, &$vars){
         $e = strtolower(trim($email));
-        $o = array('%e' => $e, '%m' => md5($e), '%a' => sha1($e));
+        $o = array('%e' => urlencode($e), '%m' => md5($e), '%a' => sha1($e));
         return strtr($api, array_merge($vars, $o));
+    }
+
+    private static function _get_contents_apis($urls){
+        foreach ($urls as $url) {
+            $str = @file_get_contents($url);
+            if ($str !== false){
+                return $str;
+            }
+        }
+        return false;
     }
 
     /**
@@ -82,10 +92,12 @@ class gravatar_addressbook_backend extends rcube_addressbook
         $acfg = array('%%' => '%',
                       '%z' => intval($config->get('gravatar_size')),
                       '%r' => urlencode($config->get('gravatar_rating')),
-                      '%s' => $config->get('gravatar_https', false) ? 'https' : 'http',
-                      '%h' => $config->get('gravatar_server', 'www.gravatar.com')
+                      '%s' => $config->get('gravatar_https', false) ? 'https' : 'http'
                   );
-        $papi = $config->get('gravatar_photo_api', '%s://%h/avatar/%m?s=%z&r=%r&d=404');
+        $ge = $config->get('gravatar_enabled', false);
+        $gpapi = $config->get('gravatar_photo_api', '%s://www.gravatar.com/avatar/%m?s=%z&r=%r&d=404');
+        $ce = $config->get('gravatar_custom', false);
+        $cpapi = $config->get('gravatar_custom_photo_api');
 
         if ($mode == 1 && in_array('email', $fil) &&
           count(array_diff($req, array('ID', 'email', 'photo')))==0){
@@ -96,9 +108,17 @@ class gravatar_addressbook_backend extends rcube_addressbook
                 $record = array();
                 $record['ID'] = $id;
                 $record['email'] = array($v);
-                $url = $this->_get_api_url($v, $papi, $acfg);
-                $p = @file_get_contents($url);
-                if ($p === false){
+                $urls = array();
+                if ($ce && $cpapi != null) {
+                    //First custom API
+                    $urls[] = gravatar_addressbook_backend::_get_api_url($v, $cpapi, $acfg);
+                }
+                if ($ge) {
+                    //Then Gravatar
+                    $urls[] = gravatar_addressbook_backend::_get_api_url($v, $gpapi, $acfg);
+                }
+                $p = gravatar_addressbook_backend::_get_contents_apis($urls);
+                if ($p == false){
                     if (in_array('photo', $req)) continue;
                 }else{
                     $record['photo'] = $p;

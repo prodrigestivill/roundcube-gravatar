@@ -24,8 +24,8 @@ class gravatar extends rcube_plugin
 
   function is_enabled()
   {
-    $prefs = rcmail::get_instance()->user->get_prefs();
-    return (bool)$prefs['gravatar_enabled'];
+    $config = rcmail::get_instance()->config;
+    return (bool)($config->get('gravatar_enabled', false) || $config->get('gravatar_custom', false));
   }
 
   // roundcube collects information about available addressbooks
@@ -82,6 +82,14 @@ class gravatar extends rcube_plugin
             'title'   => html::label($field_id, $this->gettext('gravatar_rating')),
             'content' => $select->show($rcmail->config->get('gravatar_rating', 'g')),
         );
+        if ($rcmail->config->get('gravatar_custom_photo_api')!=null) {
+            $field_id = 'rc_gravatar_custom';
+            $checkbox = new html_checkbox(array('name' => $field_id, 'id' => $field_id, 'value' => 1));
+            $params['blocks'][$this->abook_id]['options'][$field_id] = array(
+                'title' => html::label($field_id, rcube::Q($this->gettext('gravatar_use_custom'))),
+                'content' => $checkbox->show($rcmail->config->get('gravatar_custom'))
+            );
+        }
     }
     return $params;
   }
@@ -89,9 +97,13 @@ class gravatar extends rcube_plugin
   function preferences_save($params)
   {
     if($params['section'] == 'addressbook') {
+        $rcmail = rcmail::get_instance();
         $params['prefs']['gravatar_enabled'] = isset($_POST['rc_gravatar_enabled']) ? true : false;
         $params['prefs']['gravatar_size'] = isset($_POST['rc_gravatar_size']) && intval($_POST['rc_gravatar_size']) != 0 ? intval($_POST['rc_gravatar_size']) : 128;
         $params['prefs']['gravatar_rating'] = isset($_POST['rc_gravatar_rating']) ? $_POST['rc_gravatar_rating'] : 'g';
+        if ($rcmail->config->get('gravatar_custom_photo_api')!=null) {
+            $params['prefs']['gravatar_custom'] = isset($_POST['rc_gravatar_custom']) ? true : false;
+        }
     }
     return $params;
   }

@@ -8,3 +8,4 @@ $labels['gravatar_G'] = 'G rated';
 $labels['gravatar_PG'] = 'PG rated';
 $labels['gravatar_R'] = 'R rated';
 $labels['gravatar_X'] = 'X rated';
+$labels['gravatar_use_custom'] = 'Use defined API (it always has preference)';
