@@ -6,17 +6,20 @@ class gravatar extends rcube_plugin
 {
   public $task = 'mail|addressbook|settings';
   private $abook_id = 'gravatar_addressbook';
-  private $abook_name = gravatar_addressbook_backend::name;
+  private $abook_name = 'Gravatar'; //Replaced in init
 
   function init()
   {
-    $rcmail = rcmail::get_instance();
+    $this->add_texts('localization');
+    $this->abook_name = $this->gettext('gravatar_plugin');
+
+    $this->load_config('config.inc.php.dist');
+    $this->load_config('config.inc.php');
 
     $this->add_hook('preferences_list', array($this, 'preferences_list'));
     $this->add_hook('preferences_save', array($this, 'preferences_save'));
     $this->add_hook('addressbooks_list', array($this, 'addressbooks_list'));
     $this->add_hook('addressbook_get', array($this, 'addressbook_get'));
-
   }
 
   function is_enabled()
@@ -44,6 +47,7 @@ class gravatar extends rcube_plugin
   {
     if($params['id'] == $this->abook_id) {
       $params['instance'] = new gravatar_addressbook_backend();
+      $params['instance']->set_name($this->abook_name);
       $params['writable'] = false;
       $params['hidden'] = true;
     }
@@ -55,11 +59,28 @@ class gravatar extends rcube_plugin
     if($params['section'] == 'addressbook') {
         $rcmail = rcmail::get_instance();
         $params['blocks'][$this->abook_id]['name'] = $this->abook_name;
-        $field_id = 'rc_gravatar_plugin';
+        $field_id = 'rc_gravatar_enabled';
         $checkbox = new html_checkbox(array('name' => $field_id, 'id' => $field_id, 'value' => 1));
         $params['blocks'][$this->abook_id]['options'][$field_id] = array(
-        'title' => html::label($field_id, "Enable"),
-        'content' => $checkbox->show($rcmail->config->get('gravatar_enabled'))
+            'title' => html::label($field_id, rcube::Q($this->gettext('gravatar_use'))),
+            'content' => $checkbox->show($rcmail->config->get('gravatar_enabled'))
+        );
+        $field_id = 'rc_gravatar_size';
+        $input = new html_inputfield(array('name' => $field_id, 'id' => $field_id, 'size' => 45));
+        $params['blocks'][$this->abook_id]['options'][$field_id] = array(
+            'title' => html::label($field_id, rcube::Q($this->gettext('gravatar_size'))),
+            'content' => $input->show($rcmail->config->get('gravatar_size'))
+        );
+        $field_id = 'rc_gravatar_rating';
+        $select   = new html_select(array('name' => $field_id, 'id' => $field_id));
+        $select->add(array(rcube::Q($this->gettext('gravatar_G')),
+                           rcube::Q($this->gettext('gravatar_PG')),
+                           rcube::Q($this->gettext('gravatar_R')),
+                           rcube::Q($this->gettext('gravatar_X'))),
+                     array('g', 'pg', 'r', 'x'));
+        $params['blocks'][$this->abook_id]['options'][$field_id] = array(
+            'title'   => html::label($field_id, $this->gettext('gravatar_rating')),
+            'content' => $select->show($rcmail->config->get('gravatar_rating', 'g')),
         );
     }
     return $params;
@@ -68,7 +89,9 @@ class gravatar extends rcube_plugin
   function preferences_save($params)
   {
     if($params['section'] == 'addressbook') {
-      $params['prefs']['gravatar_enabled'] = isset($_POST['rc_gravatar_plugin']) ? true : false;
+        $params['prefs']['gravatar_enabled'] = isset($_POST['rc_gravatar_enabled']) ? true : false;
+        $params['prefs']['gravatar_size'] = isset($_POST['rc_gravatar_size']) && intval($_POST['rc_gravatar_size']) != 0 ? intval($_POST['rc_gravatar_size']) : 128;
+        $params['prefs']['gravatar_rating'] = isset($_POST['rc_gravatar_rating']) ? $_POST['rc_gravatar_rating'] : 'g';
     }
     return $params;
   }

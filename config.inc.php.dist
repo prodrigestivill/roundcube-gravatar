@@ -1,0 +1,9 @@
+<?php
+// Default values for unconfigured users
+$config['gravatar_enabled'] = false;
+$config['gravatar_size'] = 128;
+$config['gravatar_rating'] = 'g'; // Possible values 'g', 'pg', 'r', 'x'
+
+// Server side configuration
+$config['gravatar_https'] = false; // It is only server to server
+$config['gravatar_server'] = 'www.gravatar.com'; // This normally should not be changed

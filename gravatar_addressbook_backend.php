@@ -2,15 +2,21 @@
 
 class gravatar_addressbook_backend extends rcube_addressbook
 {
-    const name = 'Gravatar Addressbook';
+    private $name = 'Gravatar';
 
     /**
     * Returns addressbook name
     */
     function get_name()
     {
-        return gravatar_addressbook_backend::name;
+        return $this->name;
     }
+
+    function set_name($name)
+    {
+        $this->name = $name;
+    }
+
 
     /**
     * Save a search string for future listings
@@ -62,10 +68,12 @@ class gravatar_addressbook_backend extends rcube_addressbook
     */
     function search($fields, $value, $mode=0, $select=true, $nocount=false, $required=array()){
         $res = new rcube_result_set();
-        //TODO add this to settings
-        $size = 128;
-        $rating = 'g';
-        //
+
+        $config = rcmail::get_instance()->config;
+        $size = intval($config->get('gravatar_size'));
+        $rating = urlencode($config->get('gravatar_rating'));
+        $schema = $config->get('gravatar_https', true) ? 'https' : 'http';
+        $server = $config->get('gravatar_server', 'www.gravatar.com');
 
         if ($mode == 1 && in_array('email', $fields) &&
           count(array_diff($required, array('ID', 'email', 'photo')))==0){
@@ -78,7 +86,7 @@ class gravatar_addressbook_backend extends rcube_addressbook
                 $record = array();
                 $record['ID'] = $hash;
                 $record['email'] = array($v);
-                $url = "https://www.gravatar.com/avatar/$hash?s=$size&r=$rating&d=404";
+                $url = "$schema://$server/avatar/$hash?s=$size&r=$rating&d=404";
                 $p = @file_get_contents($url);
                 if ($p === false){
                     if (in_array('photo', $req)) continue;
