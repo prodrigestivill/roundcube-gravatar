@@ -13,12 +13,12 @@ Installation
 
 Intallation steps:
   - Via composer:
-    - Run `php composer.phar require prodrigestivill/gravatar`.
+    - Run `php composer.phar require "prodrigestivill/gravatar":"dev-master"`
   - Via git:
     - Clone the repository:
       `cd roundcube/plugins && git clone git@github.com:prodrigestivill/roundcube-gravatar.git gravatar`
   - Via tarball:
-    - Download and extract the tarball into `roundcube/plugins` directory and rename the extracted directory to `gravatar`.
+    - Download and extract the tarball into `roundcube/plugins` directory and rename the extracted directory to `gravatar`
 
 
 For the expected behaviour **ensure** it is always the latest plugin (or at least addressbook plugin) in the `$config['plugins']` list at `config/config.inc.php`.
@@ -53,6 +53,6 @@ You can use local files, it is not needed to be an URL. But if you plan to use i
 Examples:
 ```php
 $config['gravatar_custom_photo_api'] = 'http://www.example.com/directory/%e.jpg?s=%z';
-OR
+//OR//
 $config['gravatar_custom_photo_api'] = '/path/%m.jpg';
 ```
