@@ -1,4 +1,5 @@
 <?php
+//Translation by Malte Kiefer (@beli3ver)
 $labels = array();
 $labels['gravatar_plugin'] = 'Gravatar Adressbuch';
 $labels['gravatar_use'] = 'Gravatar nutzen';
