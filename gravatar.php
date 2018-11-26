@@ -13,8 +13,7 @@ class gravatar extends rcube_plugin
     $this->add_texts('localization');
     $this->abook_name = $this->gettext('gravatar_plugin');
 
-    $this->load_config('config.inc.php.dist');
-    $this->load_config('config.inc.php');
+    $this->load_config();
 
     $this->add_hook('preferences_list', array($this, 'preferences_list'));
     $this->add_hook('preferences_save', array($this, 'preferences_save'));
@@ -63,13 +62,13 @@ class gravatar extends rcube_plugin
         $checkbox = new html_checkbox(array('name' => $field_id, 'id' => $field_id, 'value' => 1));
         $params['blocks'][$this->abook_id]['options'][$field_id] = array(
             'title' => html::label($field_id, rcube::Q($this->gettext('gravatar_use'))),
-            'content' => $checkbox->show($rcmail->config->get('gravatar_enabled'))
+            'content' => $checkbox->show($rcmail->config->get('gravatar_enabled', false))
         );
         $field_id = 'rc_gravatar_size';
         $input = new html_inputfield(array('name' => $field_id, 'id' => $field_id, 'size' => 45));
         $params['blocks'][$this->abook_id]['options'][$field_id] = array(
             'title' => html::label($field_id, rcube::Q($this->gettext('gravatar_size'))),
-            'content' => $input->show($rcmail->config->get('gravatar_size'))
+            'content' => $input->show($rcmail->config->get('gravatar_size', 128))
         );
         $field_id = 'rc_gravatar_rating';
         $select   = new html_select(array('name' => $field_id, 'id' => $field_id));
@@ -87,7 +86,7 @@ class gravatar extends rcube_plugin
             $checkbox = new html_checkbox(array('name' => $field_id, 'id' => $field_id, 'value' => 1));
             $params['blocks'][$this->abook_id]['options'][$field_id] = array(
                 'title' => html::label($field_id, rcube::Q($this->gettext('gravatar_use_custom'))),
-                'content' => $checkbox->show($rcmail->config->get('gravatar_custom'))
+                'content' => $checkbox->show($rcmail->config->get('gravatar_custom', false))
             );
         }
     }
