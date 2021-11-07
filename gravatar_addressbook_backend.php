@@ -53,8 +53,10 @@ class gravatar_addressbook_backend extends rcube_addressbook
     }
 
     private static function _get_api_url($email, $api, &$vars){
+        $emailExploded = explode("@",$email);
+        $d = strtolower(trim($emailExploded[1]));
         $e = strtolower(trim($email));
-        $o = array('%e' => urlencode($e), '%m' => md5($e), '%a' => sha1($e));
+        $o = array('%e' => urlencode($e), '%m' => md5($e), '%a' => sha1($e),'%d' => urlencode($d));
         return strtr($api, array_merge($vars, $o));
     }
 
