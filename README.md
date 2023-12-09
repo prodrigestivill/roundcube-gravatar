@@ -22,7 +22,7 @@ Intallation steps:
 
 
 For the expected behaviour **ensure** it is always the latest plugin (or at least addressbook plugin) in the `$config['plugins']` list at `config/config.inc.php`.
-
+Also consider **cleaning the browser cache** when changing from disabled to enabled or vice versa.
 
 To enable per user: Login to Roundcube and enable/disable plugin by navigating to the Settings page, clicking on Preferences, click on Address Book, and Enable Gravatar, and Save.
 
