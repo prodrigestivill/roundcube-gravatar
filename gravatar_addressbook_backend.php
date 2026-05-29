@@ -23,7 +23,8 @@ class gravatar_addressbook_backend extends rcube_addressbook
     *
     * @param mixed Search params to use in listing method, obtained by get_search_set()
     */
-    function set_search_set($filter){
+    function set_search_set($filter): void
+    {
     }
 
     /**
@@ -38,7 +39,8 @@ class gravatar_addressbook_backend extends rcube_addressbook
     /**
     * Reset saved results and search parameters
     */
-    function reset(){
+    function reset(): void
+    {
     }
 
     /**
