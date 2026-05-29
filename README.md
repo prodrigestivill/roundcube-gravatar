@@ -5,7 +5,7 @@ Non official plug-in showing [Gravatar](https://www.gravatar.com/) profile image
 
 It has been implemented as Roundcube readonly hidden addressbook. You have to ensure this plugin is added into the latest entry in the main config (`$config['plugins']`). If so and any address book (LDAP, Google, etc...) already has a photo for a contact it will use first the other pictures and lastly if none reported it will use gravatar (Roundcube will use it in following the order listed in the main config).
 
-Tested in roundcube 1.2.0.
+Tested in roundcube 1.7.0.
 
 
 Installation
